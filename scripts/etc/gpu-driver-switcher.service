@@ -1,10 +1,13 @@
 #place this in /etc/systemd/system/gpu-driver-switcher.service
 [Unit]
 Description=Check and Switch Drivers for GPU
+
 [Service]
 Type=simple
 User=root
 RemainAfterExit=false
-ExecStart=$HOME/.local/share/amdgpu-vfio/scripts/slow.sh
+ExecStart=$HOME/.local/share/amdgpu-vfio/scripts/slow
+StandardOutput=file:%h/log_file
+
 [Install]
 WantedBy=multi-user.target
