@@ -3,7 +3,7 @@
 ## bind to original driver after vm shutdown:
 ## bind / unbind card to and from VFIO-PCI to AMDGPU
 ## This is layed out incase I need to call for it specifically.
-source $HOME/.local/share/amdgpu-vfio/scripts/source_array_functions.sh
+source $HOME/.local/share/amdgpu-vfio/scripts/source_array_functions
 # Remove the devices from the PCI bus, and then rescan to attach the chosen drivers
 remove_pci() {
 if [ ${#DEVICES[@]} -gt 0 ]; then
