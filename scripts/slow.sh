@@ -1,5 +1,5 @@
 #!/bin/bash
-source $HOME/.config/scripts/gpuswitch/source_array_functions.sh
+source $HOME/.local/share/amdgpu-vfio/scripts/source_array_functions.sh
 ## These are the usual results for my current setup.
 # gpu=0000:02:00.0
 # aud=0000:02:00.1
