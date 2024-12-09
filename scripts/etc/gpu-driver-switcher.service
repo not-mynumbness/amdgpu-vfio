@@ -1,0 +1,10 @@
+#place this in /etc/systemd/system/gpu-driver-switcher.service
+[Unit]
+Description=Check and Switch Drivers for GPU
+[Service]
+Type=simple
+User=root
+RemainAfterExit=false
+ExecStart=/home/deffn/.configs/scripts/gpuswitch/slow.sh
+[Install]
+WantedBy=multi-user.target
