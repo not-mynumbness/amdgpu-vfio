@@ -23,11 +23,11 @@ if [ ${#DRIVERS[@]} -gt 0 ]; then
         if [ ${#unique_drivers[@]} -eq 1 ]; then
             echo "Multiple drivers found, but they are the same, performing action for same drivers"
             # Perform action for same drivers
-            bash $HOME/.config/scripts/gpuswitch/amdgpu_snd_hda_intel_add_new_id.sh
+            bash $HOME/.local/share/amdgpu-vfio/scripts/amdgpu_snd_hda_intel_add_new_id.sh
         else
             echo "Multiple drivers found, and they are different, performing action for different drivers"
             # Perform action for different drivers
-            bash $HOME/.config/scripts/gpuswitch/vfio_add_new_id.sh
+            bash $HOME/.local/share/amdgpu-vfio/scripts/vfio_add_new_id.sh
         fi
     fi
 fi
