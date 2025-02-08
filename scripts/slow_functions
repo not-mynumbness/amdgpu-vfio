@@ -26,7 +26,7 @@ add_vfio_pci() {
 if [ ${#IDS[@]} -gt 0 ]; then
     for id in "${IDS[@]}"; do
         echo "Addind new ID $id to VFIO-PCI driver"
-        # echo "$id" > /sys/bus/pci/drivers/vfio-pci/new_id
+        echo "$id" > /sys/bus/pci/drivers/vfio-pci/new_id
         sleep 2
     done
 fi
@@ -41,12 +41,12 @@ if [ ${#IDS[@]} -gt 0 ]; then
             if [[ $component_id == "0x67df" ]]; then
                 # Perform action for 0x1002 0x67df
                 echo "Removing GPU ID $manufacturer_id $component_id to AMDGPU driver"
-                # echo "$manufacturer_id $component_id" > /sys/bus/pci/drivers/amdgpu/remove_id
+                echo "$manufacturer_id $component_id" > /sys/bus/pci/drivers/amdgpu/remove_id
                 sleep 1
             elif [[ $component_id == "0xaaf0" ]]; then
                 # Perform action for 0x1002 0xaaf0
                 echo "Removing AUD ID $manufacturer_id $component_id to SND_HDA_INTEL driver"
-                # echo "$manufacturer_id $component_id" > /sys/bus/pci/drivers/snd_hda_intel/remove_id
+                echo "$manufacturer_id $component_id" > /sys/bus/pci/drivers/snd_hda_intel/remove_id
                 sleep 1
             fi
         fi
@@ -58,7 +58,7 @@ remove_vfio_pci() {
 if [ ${#IDS[@]} -gt 0 ]; then
     for id in "${IDS[@]}"; do
         echo "Removing GPU/AUD ID $id from VFIO-PCI driver"
-        # echo "$id" > /sys/bus/pci/drivers/vfio-pci/remove_id
+        echo "$id" > /sys/bus/pci/drivers/vfio-pci/remove_id
         sleep 2
     done
 fi
@@ -70,7 +70,7 @@ if [ ${#DEVICES[@]} -gt 0 ]; then
     for device in "${DEVICES[@]}"; do
         if [ -f /sys/bus/pci/devices/$device/remove ]; then
             echo "Removing device $device from PCI bus"
-            # echo "1" > /sys/bus/pci/devices/$device/remove
+            echo "1" > /sys/bus/pci/devices/$device/remove
             sleep 2
         fi
     done

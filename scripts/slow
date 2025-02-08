@@ -11,6 +11,12 @@ source slow_functions
 # echo ${DEVICES[@]}
 # echo ${DRIVERS[@]}
 # echo $IOMMU_GROUP
+# Check if running sudo or as root for permissions.
+if [ "$(id -u)" -ne 0 ]; then
+  echo "This script must be run as root or with sudo privileges."
+  exit 1
+fi
+
 check_drivers() {
 if [ ${#DRIVERS[@]} -gt 0 ]; then
     for driver in "${DRIVERS[@]}"; do
@@ -18,15 +24,17 @@ if [ ${#DRIVERS[@]} -gt 0 ]; then
         echo "Current driver: $current_driver"
     done
     # Decide which script to call based on the results of the DRIVERS array
-    if [[ " ${DRIVERS[*]} " == *"vfio-pci"* ]]; then
-        echo "VFIO-PCI drivers found, running script_for_vfio.sh"
+    if [[ " ${DRIVERS[*]} " == *"vfio_pci"* ]]; then
+        echo "VFIO-PCI drivers found, running script for found vfio"
         vfio_found
     elif [[ " ${DRIVERS[*]} " == *"amdgpu"* ]]; then
-        echo "AMDGPU drivers found, running script_for_amdgpu.sh"
+        echo "AMDGPU drivers found, running script for found amdgpu"
         amdgpu_found
     else
-        echo "No known drivers found, running default_script.sh"
-        exit 0
+        echo "No known drivers found, running off a cliff"
+        rescan_pci
+        vfio_found
+        exit 1
     fi
     # if [ ${#DRIVERS[@]}  1 ]; then
     #     echo "Only one driver found, performing action for single driver"
