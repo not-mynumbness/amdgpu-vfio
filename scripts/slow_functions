@@ -84,8 +84,9 @@ echo "1" > /sys/bus/pci/rescan
 echo "GPU Passthrough Switch Code Sourced Properly!"
 
 # Script Call Functions
-# amdgpu_snd_hda_intel_add_new_id
-
+## Detaches the GPU from from system, and Rescans to Re-Attach to AMDGPU Drivers
+## bind to original driver after vm shutdown:
+## bind / unbind card to and from VFIO-PCI to AMDGPU
 amdgpu_found(){
 ## Removes the IDs to the AMDGPU and SND_HDA_INTEL driver
 ## There may be a chance that this is needed for multi GPU set ups

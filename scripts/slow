@@ -10,7 +10,7 @@ source slow_functions
 # echo ${IDS[@]}
 # echo ${DEVICES[@]}
 # echo ${DRIVERS[@]}
-# echo $IOMMU_GROU
+# echo $IOMMU_GROUP
 check_drivers() {
 if [ ${#DRIVERS[@]} -gt 0 ]; then
     for driver in "${DRIVERS[@]}"; do

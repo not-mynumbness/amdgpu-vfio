@@ -1,1 +1,3 @@
 scripts/env_var
+scripts/amdgpu_snd_hda_intel_add_new_id
+scripts/vfio_add_new_id
