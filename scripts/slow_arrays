@@ -1,0 +1,93 @@
+#!/bin/bash
+## Source for my Arrays and my functions for the GPU card.
+## # source iommu ## This is specific to my setup. Please check your own!
+## https://wiki.archlinux.org/title/PCI_passthrough_via_OVMF#Ensuring_that_the_groups_are_valid
+
+shopt -s nullglob
+declare -A iommu_devices
+declare -i IOMMU_GROUP
+#declare -A group_number
+declare -a DEVICES
+declare -a IDS
+declare -a DRIVERS
+
+
+for g in $(find /sys/kernel/iommu_groups/* -maxdepth 0 -type d | sort -V); do
+  group_number=${g##*/}
+    # echo "FIRST IOMMU Group ${group_number}:"
+  i=0
+  for d in $g/devices/*; do
+    device_info=$(lspci -knns "${d##*/}")
+    iommu_devices["${group_number}_${i}"]="$device_info"
+    #  echo -e "\t${device_info}"
+    #  echo ${group_number[@]}
+    i=$((i + 1))
+  done
+done
+# # Filter the results for VGA cards only
+echo "AMDGPU Cards:"
+for key in "${!iommu_devices[@]}"; do
+  if [[ ${iommu_devices[$key]} == *VGA* ]]; then
+    # echo "Key: $key, Value: ${iommu_devices[$key]}"
+    if [[ ${iommu_devices[$key]} == *amdgpu* ]]; then
+        echo "Key: $key, Value: ${iommu_devices[$key]}"
+        IOMMU_GROUP=$( echo $key | ( awk -F_ '{print $1}'))
+        echo "IOMMU Group is ${IOMMU_GROUP} "
+    fi
+  fi
+done
+echo " IOMMU Group left ${IOMMU_GROUP[*]} "
+
+# Grab Devices based on the IOMMU Group Specified.
+DEVICES=($(ls -l /sys/kernel/iommu_groups/$IOMMU_GROUP/devices/ | awk '{print $9}'))
+echo "${DEVICES[*]}"
+# Get the ID's of those devices
+IDS=() 
+if [ ${#DEVICES[@]} -gt 0 ]; then
+    for device in "${DEVICES[@]}"; do
+        vendor=$(cat /sys/bus/pci/devices/$device/vendor)
+        device_id=$(cat /sys/bus/pci/devices/$device/device)
+        IDS+=("$vendor $device_id")
+        done
+fi
+echo "${IDS[*]}"
+# Get the Drivers currently used by those devices.
+DRIVERS=()
+if [ ${#DEVICES[@]} -gt 0 ]; then
+  # Check the driver for the device
+    mapfile -t DRIVERS < <(for device in "${DEVICES[@]}"; do readlink -f /sys/bus/pci/devices/$device/driver | awk -F/ '{print $NF}'; done)
+fi
+echo "${DRIVERS[*]}"
+# Get the devices, their ID values and the Drivers of the IOMMU group
+# Loop through the groups and extract the required information
+#  echo " IOMMU left ${iommu_devices[*]}"
+#  echo " Devices left ${DEVICES[*]}"
+#  echo " Drivers left ${DRIVERS[*]}"
+#  echo " IDS left ${IDS[*]}"
+
+
+# # Print the arrays for verification
+# for key in "${!iommu_devices[@]}"; do
+#   echo "Key: $key, Value: ${iommu_devices[$key]}"
+# done
+# # Filter the results for IOMMU Group 16 only
+# echo "IOMMU Group 16:"
+# for key in "${!iommu_devices[@]}"; do
+#   if [[ ${key} == 16_* ]]; then
+#     echo "Key: $key, Value: ${iommu_devices[$key]}"
+#   fi
+# done
+
+# echo "IOMMU Group ${group_number}:"
+# i=0
+# for d in /sys/kernel/iommu_groups/$group_number/devices/*; do
+#   device_info=$(lspci -nns ${d##*/})
+#   iommu_devices["${group_number}_${i}"]="$device_info"
+# #   echo -e "\t${device_info}"
+#   i=$((i + 1))
+# done
+
+# # Print the arrays for verification
+# for key in "${!iommu_devices[@]}"; do
+#   echo "Key: $key, Value: ${iommu_devices[$key]}"
+# done
