@@ -1,4 +1,4 @@
-# VFIO with IGPU(INTEL) and AMD GPU (RC 580) and dynamic unbinding and rebinding
+# VFIO with IGPU(INTEL) and AMD GPU (RX 580) and dynamic unbinding and rebinding
 ## What THIS ONE is all about
 This is my way of dynamically switching the GPU between the VM and HOST, **without needing to restart desktop environment**, and also using the Display out of the card
 >## My current setup
